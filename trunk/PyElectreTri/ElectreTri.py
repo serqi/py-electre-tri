@@ -1,5 +1,5 @@
 import random
-import pickle
+import cPickle as pickle
 from pulp import GLPK, LpProblem, LpVariable, LpMaximize, LpBinary
 
 class SemanticError(Exception):
