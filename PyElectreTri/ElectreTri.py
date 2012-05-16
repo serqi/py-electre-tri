@@ -60,11 +60,10 @@ class Category:
 		self.rank = rank #relative rank
 
 class PerformanceTable:	
-	def __init__(self, alts, crits):
-
-		self.create_performance_table(alts,crits)
+	def __init__(self, crits, alts = []):			
 		self.alts = alts
 		self.crits = crits
+		self.create_performance_table(alts,crits)		
 
 	def create_performance_table(self, alts, crits):
 		self.performance_table = {}
@@ -363,9 +362,9 @@ class ElectreTriSimple:
 		for crit in crits:
 			crit.weight = d_p[crit.name].value()
 
-		for crit in crits:
-			performance_table[self.limit_profiles[0]][crit] = d_gb[crit.name].value()
-		 
+		#for crit in crits:
+		#	performance_table[self.limit_profiles[0]][crit] = d_gb[crit.name].value()
+		
 		self.ignoredAlternatives = []
 		for alt in alts:
 			if d_gamma[alt.name].value() == 0:
@@ -700,7 +699,7 @@ if __name__ == "__main__":
 	clist = [c1,c2,c3,c4]
 	cllist = [class1,class2]
 
-	pt = PerformanceTable(alist, clist)
+	pt = PerformanceTable(clist, alist)
 
 	pt.randomize()
 
