@@ -88,17 +88,16 @@ elif args.command == "learn":
         """
         spamc_analysis = []
         for dummy in range(random.randint(1,4)):
-            spamc_analysis.append(random.choice(['RCVD_IN_BL_SPAMCOP_NET','PYZOR_CHECK','RAZOR2_CHECK','BAYES_00','BAYES_99']))
+            spamc_analysis.append(random.choice(['RCVD_IN_BL_SPAMCOP_NET','PYZOR_CHECK','RAZOR2_CHECK','BAYES_00','BAYES_50','BAYES_99']))
         
         
         for crit in ets.crits: 
             test_score = 0.0
             for test_name in spamc_analysis:
-                if crit.name in test_name:
-                    if crit.name is 'BAYES':
+                if crit.name in test_name:                    
+                    if crit.name == 'BAYES':
                         #extract the last two digits and convert it into a percentage
                         test_score = int(test_name[-2:]) / 100.0
-                        print test_score
                     else:
                         test_score = 1.0
                     
@@ -114,13 +113,13 @@ elif args.command == "learn":
         
         spamc_analysis = []
         for dummy in range(random.randint(1,4)):
-            spamc_analysis.append(random.choice(['RCVD_IN_BL_SPAMCOP_NET','PYZOR_CHECK','RAZOR2_CHECK','BAYES_00','BAYES_99']))
+            spamc_analysis.append(random.choice(['RCVD_IN_BL_SPAMCOP_NET','PYZOR_CHECK','RAZOR2_CHECK','BAYES_00','BAYES_50','BAYES_99']))
         
         for crit in ets.crits: 
             test_score = 0.0
             for test_name in spamc_analysis:
                 if crit.name in test_name:
-                    if crit.name is 'BAYES':
+                    if crit.name == 'BAYES':
                         #extract the last two digits and convert it into a percentage
                         test_score = int(test_name[-2:]) / 100.0
                     else:
