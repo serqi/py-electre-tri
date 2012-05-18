@@ -37,11 +37,16 @@ if args.command == "filter":
     
     #mail_content += '\n' + sys.stdin.read()
     
-    mail_content = sys.stdin.read()
-    
+    mail_content = "test"
+    """
     #send the mail content into spamc (spamc will redirect the content to spamd)
     spamc = subprocess.Popen([SPAMC, '-y'], stdin = subprocess.PIPE, stdout = subprocess.PIPE)
     spamc_analysis = spamc.communicate(mail_content)[0].split(',')
+    """
+    spamc_analysis = []
+    for dummy in range(random.randint(1,4)):
+        spamc_analysis.append(random.choice(['RCVD_IN_BL_SPAMCOP_NET','PYZOR_CHECK','RAZOR2_CHECK','BAYES_00','BAYES_50','BAYES_99']))
+        
         
     #use ELECTRE TRI
     ets = pickle.load(open(model_file, "r+"))
@@ -66,7 +71,8 @@ if args.command == "filter":
     #send the analysis to jglouis@samifis.be
     sendmail = subprocess.Popen([SENDMAIL, 'jglouis@samifis.be'], stdin = subprocess.PIPE)
     report = 'Subject: spam report\n'
-    report += spamc_analysis
+    report += str(spamc_analysis) + "\n"
+    report += alt.category.name
     
     sendmail.communicate(report)
 
