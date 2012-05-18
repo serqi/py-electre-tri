@@ -71,6 +71,10 @@ class PerformanceTable:
 			self.performance_table[alt] = {}
 			for crit in crits:
 				self.performance_table[alt][crit] = None
+				
+	def append_performance_table(self, performance_table):
+		"""join 2 perf tables into 1"""
+		self.performance_table = dict(performance_table.performance_table.items() + self.performance_table.items())
 
 	def set_perf(self, alt, crit, value):
 
@@ -177,6 +181,9 @@ class ElectreTriSimple:
 		self.crits = crits
 		self.limit_profiles = list(set([cat.lp_inf for cat in categories if cat.lp_inf is not None] + [cat.lp_sup for cat in categories if cat.lp_sup is not None]))
 		self.categories = categories
+		
+		#the performance table will only contain the limit profiles
+		self.lp_performance_table = PerformanceTable(crits, self.limit_profiles)
 
 		#self.check_data_consistence()
 		self.normalize_weights() #the total weight sum must be equal to one
@@ -197,6 +204,8 @@ class ElectreTriSimple:
 		return sum >= self.cutting_threshold
 
 	def solve_pessimistic(self, performance_table):
+		performance_table.append_performance_table(self.lp_performance_table)
+		
 		#sort the categories by ascending rank order:
 		self.categories.sort(key = lambda c : c.rank)
 
@@ -211,6 +220,8 @@ class ElectreTriSimple:
 						break					
 
 	def solve_optimistic(self, performance_table):
+		performance_table.append_performance_table(self.lp_performance_table)
+		
 		#sort the categories by descending rank order:
 		self.categories.sort(key = lambda c : c.rank, reverse = True)	
 		
@@ -362,8 +373,8 @@ class ElectreTriSimple:
 		for crit in crits:
 			crit.weight = d_p[crit.name].value()
 
-		#for crit in crits:
-		#	performance_table[self.limit_profiles[0]][crit] = d_gb[crit.name].value()
+		for crit in crits:
+			self.lp_performance_table[self.limit_profiles[0]][crit] = d_gb[crit.name].value()
 		
 		self.ignoredAlternatives = []
 		for alt in alts:
@@ -382,7 +393,7 @@ class ElectreTriSimple:
 		crits_name = [crit.name for crit in crits]
 		
 		categories = self.categories
-		 
+		
 		categories.sort(key=lambda c: c.rank, reverse=True)	
 		
 		categoriesUp = list(categories)
