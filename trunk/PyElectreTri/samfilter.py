@@ -41,11 +41,27 @@ if args.command == "filter":
     
     #send the mail content into spamc (spamc will redirect the content to spamd)
     spamc = subprocess.Popen([SPAMC, '-y'], stdin = subprocess.PIPE, stdout = subprocess.PIPE)
-    spamc_analysis = spamc.communicate(mail_content)[0]
+    spamc_analysis = spamc.communicate(mail_content)[0].split(',')
+        
+    #use ELECTRE TRI
+    ets = pickle.load(open(model_file, "r+"))
     
-    #hit_list is a list of all the test names from spamassassin that have responded positive
-    hit_list =  spamc_analysis.split(',')
-    print hit_list
+    alt = ElectreTri.Alternative("mail")
+    performance_table = ElectreTri.PerformanceTable(ets.crits, [alt])
+    
+    for crit in ets.crits: 
+        test_score = 0.0
+        for test_name in spamc_analysis:
+            if crit.name in test_name:                    
+                if crit.name == 'BAYES':
+                    #extract the last two digits and convert it into a percentage
+                    test_score = int(test_name[-2:]) / 100.0
+                else:
+                    test_score = 1.0
+        performance_table.set_perf(alt, crit, test_score)    
+    
+    ets.solve_optimistic(performance_table)
+    
     
     #send the analysis to jglouis@samifis.be
     sendmail = subprocess.Popen([SENDMAIL, 'jglouis@samifis.be'], stdin = subprocess.PIPE)
