@@ -1,0 +1,1 @@
+An Electre Tri implementation in python with supervised learning
